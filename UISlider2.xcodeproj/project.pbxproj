@@ -58,6 +58,7 @@
 		E654EE342B84E212007FB343 /* UISlider2 */ = {
 			isa = PBXGroup;
 			children = (
+				E654EE4E2B84F685007FB343 /* Extensions */,
 				E654EE492B84F377007FB343 /* App */,
 				E654EE4A2B84F38C007FB343 /* ViewControllers */,
 				E654EE4B2B84F3A5007FB343 /* Storyboards */,
@@ -92,6 +93,13 @@
 				E654EE3B2B84E212007FB343 /* Main.storyboard */,
 			);
 			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		E654EE4E2B84F685007FB343 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

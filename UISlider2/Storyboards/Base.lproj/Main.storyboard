@@ -160,6 +160,18 @@
                             <constraint firstItem="yuG-lf-rsT" firstAttribute="top" secondItem="hHR-3B-I2d" secondAttribute="bottom" constant="24" id="yN7-9s-9E7"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="blueLabel" destination="2sn-Ob-Fb5" id="0fC-tE-umF"/>
+                        <outlet property="blueSlider" destination="y6S-OY-3yA" id="USP-ui-jKh"/>
+                        <outlet property="blueTextField" destination="99b-b1-10t" id="Jeu-5q-na9"/>
+                        <outlet property="colorView" destination="hHR-3B-I2d" id="RIN-i2-WOn"/>
+                        <outlet property="greenLabel" destination="Gd0-pD-xka" id="LZl-ly-CVO"/>
+                        <outlet property="greenSlider" destination="n79-Gt-0r4" id="nh6-Yd-TW7"/>
+                        <outlet property="greenTextField" destination="qTe-Ge-rhO" id="sSe-LF-w81"/>
+                        <outlet property="redLabel" destination="ev6-PW-mPl" id="JdC-EY-z4O"/>
+                        <outlet property="redSlider" destination="OBT-Bi-yZT" id="7Ha-xH-gJk"/>
+                        <outlet property="redTextField" destination="HSR-P8-2sg" id="qZq-yv-L1V"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
