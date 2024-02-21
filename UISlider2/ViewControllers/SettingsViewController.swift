@@ -24,10 +24,6 @@ final class SettingsViewController: UIViewController {
     @IBOutlet weak var greenTextField: UITextField!
     @IBOutlet weak var blueTextField: UITextField!
     
-    var redValue: CGFloat = 0
-    var greenValue: CGFloat = 0
-    var blueValue: CGFloat = 0
-    
     var backgroundColorView: UIColor!
     var delegate: SettingsViewControllerDelegate!
     
@@ -40,7 +36,11 @@ final class SettingsViewController: UIViewController {
         redSlider.tintColor = .red
         greenSlider.tintColor = .green
         
+        setValueForLabels(redLabel, greenLabel, blueLabel)
+        
         colorSettingsView.backgroundColor = backgroundColorView
+        
+        setValueForSliders(redSlider, greenSlider, blueSlider)
      
     }
     
@@ -50,26 +50,63 @@ final class SettingsViewController: UIViewController {
         
         switch sender {
         case redSlider:
-            redValue = CGFloat(round(redSlider.value  *  100) / 100)
-            redLabel.text = redValue.formatted()
+            setValueForLabels(redLabel)
         case greenSlider:
-            greenValue = CGFloat(round(greenSlider.value * 100) / 100)
-            greenLabel.text = greenValue.formatted()
+           setValueForLabels(greenLabel)
         default:
-            blueValue = CGFloat(round(blueSlider.value * 100) / 100)
-            blueLabel.text = blueValue.formatted()
-            
+            setValueForLabels(blueLabel)
         }
         
             colorSettingsView.backgroundColor = UIColor(
                 cgColor: .init(
-                    red: redValue,
-                    green: greenValue,
-                    blue: blueValue,
+                    red: CGFloat(redSlider.value),
+                    green: CGFloat(greenSlider.value),
+                    blue: CGFloat(blueSlider.value),
                     alpha: 1)
             )
-        
-        
+    }
+    
+    //упростить
+    private func setValueForLabels(_ rgbLabels: UILabel...) {
+        rgbLabels.forEach { label in
+            switch label {
+            case redLabel:
+                redSlider.value = Float(CGFloat(round(redSlider.value  *  100) / 100))
+                redLabel.text = redSlider.value.formatted()
+            case greenLabel:
+                greenSlider.value = Float(CGFloat(round(greenSlider.value * 100) / 100))
+                greenLabel.text = greenSlider.value.formatted()
+            default:
+                blueSlider.value = Float(CGFloat(round(blueSlider.value * 100) / 100))
+                blueLabel.text = blueSlider.value.formatted()
+            }
+        }
+    }
+    
+    //упростить
+    private func setValueForSliders(_ sliders: UISlider...) {
+        var rgbColor = CIColor(color: backgroundColorView)
+        sliders.forEach { slider in
+            switch slider {
+            case redSlider:
+                redSlider.value = Float(rgbColor.red)
+                redSlider.value = Float(CGFloat(round(redSlider.value  *  100) / 100))
+                redLabel.text = redSlider.value.formatted()
+            case greenSlider:
+                greenSlider.value = Float(rgbColor.green)
+                greenSlider.value = Float(CGFloat(round(greenSlider.value * 100) / 100))
+                greenLabel.text = greenSlider.value.formatted()
+            default:
+                blueSlider.value = Float(rgbColor.blue)
+                blueSlider.value = Float(CGFloat(round(blueSlider.value * 100) / 100))
+                blueLabel.text = blueSlider.value.formatted()
+            }
+        }
+    }
+    
+    @IBAction func pressedDoneButton() {
+        delegate.setViewColor(colorSettingsView.backgroundColor)
+        dismiss(animated: true)
     }
     
 }
