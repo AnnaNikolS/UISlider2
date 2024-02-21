@@ -31,6 +31,8 @@ final class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
         view.backgroundColor = .black
         colorSettingsView.layer.cornerRadius = 15
         
@@ -39,6 +41,8 @@ final class SettingsViewController: UIViewController {
         
         setValueForLabels(redLabel, greenLabel, blueLabel)
         setValueForSliders(redSlider, greenSlider, blueSlider)
+        
+       // dataTransferFromTF(redTextField, greenTextField, blueTextField)
         
         colorSettingsView.backgroundColor = backgroundColorView
     }
@@ -70,14 +74,17 @@ final class SettingsViewController: UIViewController {
                 redSlider.value = Float(CGFloat(round(redSlider.value  *  100) / 100))
                 redLabel.text = redSlider.value.formatted()
                 redTextField.text = redSlider.value.formatted()
+               // redSlider.value = Float(redTextField.text!)!
             case greenLabel:
                 greenSlider.value = Float(CGFloat(round(greenSlider.value * 100) / 100))
                 greenLabel.text = greenSlider.value.formatted()
                 greenTextField.text = greenSlider.value.formatted()
+               // greenTextField.text = greenLabel.text
             default:
                 blueSlider.value = Float(CGFloat(round(blueSlider.value * 100) / 100))
                 blueLabel.text = blueSlider.value.formatted()
                 blueTextField.text = blueSlider.value.formatted()
+               // blueTextField.text = blueLabel.text
             }
         }
     }
@@ -99,6 +106,35 @@ final class SettingsViewController: UIViewController {
         }
     }
     
+    private func textFieldSetting() {
+        
+    }
+    
+    
+    
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default)
+        alert.addAction(okAction)
+        present(alert, animated: true)
+    }
+    
+//
+//    private func dataTransferFromTF(_ textFields: UITextField...) {
+//        textFields.forEach { textField in
+//            switch textField {
+//            case redTextField:
+//                redSlider.setValue(<#T##value: Float##Float#>, animated: <#T##Bool#>)
+//            case greenTextField:
+//                //greenTextField.text = greenLabel.text
+//                greenSlider.value = Float(greenTextField.text!) ?? 0
+//            default:
+//               // blueTextField.text = blueLabel.text
+//                blueSlider.value = Float(blueTextField.text!) ?? 0
+//            }
+//        }
+//    }
+    
     @IBAction func pressedDoneButton() {
         delegate.setViewColor(colorSettingsView.backgroundColor)
         dismiss(animated: true)
@@ -109,4 +145,56 @@ final class SettingsViewController: UIViewController {
         view.endEditing(true)
     }
     
+    
+    
+}
+
+
+extension SettingsViewController: UITextFieldDelegate {
+    
+
+
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+       // return true
+    }
+    
+    
+    
+    
+    
+    
+//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+//        if let newString = textField.text?.replacingCharacters(in: range, with: string), let newDouble = Double(newString) {
+//            if newDouble >= 0 && newDouble <= 1 {
+//                return true
+//            } else {
+//                showAlert(title: "error", message: "dfghjk")
+//                return false
+//            }
+//        }
+//        return false
+//    }
+    
+    //    func textFieldDidBeginEditing(_ textField: UITextField) {
+    //        if (textField == redTextField) || (textField == greenTextField) || (textField == blueTextField) {
+    //            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: textField, action: #selector(resignFirstResponder))
+    //            navigationItem.rightBarButtonItem = doneButton
+    //        }
+    //    }
+    //
+    //    func textFieldDidEndEditing(_ textField: UITextField) {
+    //        switch textField {
+    //        case redTextField:
+    //            redSlider.value = Float(redTextField.text!)!
+    //            setValueForLabels(redLabel)
+    //        case greenTextField:
+    //            greenSlider.value = Float(greenTextField.text!)!
+    //            setValueForLabels(greenLabel)
+    //        default:
+    //            blueSlider.value = Float(blueTextField.text!)!
+    //            setValueForLabels(blueLabel)
+    //        }
+    //}
 }
