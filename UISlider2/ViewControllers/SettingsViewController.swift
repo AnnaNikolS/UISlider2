@@ -83,23 +83,19 @@ final class SettingsViewController: UIViewController {
         }
     }
     
-    //упростить
     private func setValueForSliders(_ sliders: UISlider...) {
         var rgbColor = CIColor(color: backgroundColorView)
         sliders.forEach { slider in
             switch slider {
             case redSlider:
                 redSlider.value = Float(rgbColor.red)
-                redSlider.value = Float(CGFloat(round(redSlider.value  *  100) / 100))
-                redLabel.text = redSlider.value.formatted()
+                setValueForLabels(redLabel)
             case greenSlider:
                 greenSlider.value = Float(rgbColor.green)
-                greenSlider.value = Float(CGFloat(round(greenSlider.value * 100) / 100))
-                greenLabel.text = greenSlider.value.formatted()
+               setValueForLabels(greenLabel)
             default:
                 blueSlider.value = Float(rgbColor.blue)
-                blueSlider.value = Float(CGFloat(round(blueSlider.value * 100) / 100))
-                blueLabel.text = blueSlider.value.formatted()
+               setValueForLabels(blueLabel)
             }
         }
     }
