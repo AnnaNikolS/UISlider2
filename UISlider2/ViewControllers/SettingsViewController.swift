@@ -24,14 +24,13 @@ final class SettingsViewController: UIViewController {
     @IBOutlet weak var greenTextField: UITextField!
     @IBOutlet weak var blueTextField: UITextField!
     
-    var backgroundColorView: UIColor!
-    var delegate: SettingsViewControllerDelegate!
+    // MARK: - Public Properties
+    var viewColor: UIColor!
+    unowned var delegate: SettingsViewControllerDelegate!
     
     //MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
         
         view.backgroundColor = .black
         colorSettingsView.layer.cornerRadius = 15
@@ -39,24 +38,45 @@ final class SettingsViewController: UIViewController {
         redSlider.tintColor = .red
         greenSlider.tintColor = .green
         
-        setValueForLabels(redLabel, greenLabel, blueLabel)
-        setValueForSliders(redSlider, greenSlider, blueSlider)
+        setValue(for: redSlider, greenSlider, blueSlider)
+        setValue(for: redTextField, greenTextField, blueTextField)
+        setValue(for: redLabel, greenLabel, blueLabel)
         
-       // dataTransferFromTF(redTextField, greenTextField, blueTextField)
-        
-        colorSettingsView.backgroundColor = backgroundColorView
+        colorSettingsView.backgroundColor = viewColor
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        view.endEditing(true)
+    }
+    
+    //MARK: - IB Actions
     @IBAction func pressedSlider(_ sender: UISlider) {
         switch sender {
         case redSlider:
-            setValueForLabels(redLabel)
+            setValue(for: redLabel)
+            setValue(for: redTextField)
         case greenSlider:
-            setValueForLabels(greenLabel)
+            setValue(for: greenLabel)
+            setValue(for: greenTextField)
         default:
-            setValueForLabels(blueLabel)
+            setValue(for: blueLabel)
+            setValue(for: blueTextField)
         }
-        
+        setColor()
+    }
+    
+    @IBAction func pressedDoneButton() {
+        delegate.setViewColor(colorSettingsView.backgroundColor ?? .black)
+        dismiss(animated: true)
+    }
+}
+
+//MARK: - Private Methods
+extension SettingsViewController {
+    
+    // Method for setting color in view
+    private func setColor() {
         colorSettingsView.backgroundColor = UIColor(
             cgColor: .init(
                 red: CGFloat(redSlider.value),
@@ -66,135 +86,111 @@ final class SettingsViewController: UIViewController {
         )
     }
     
-    //упростить
-    private func setValueForLabels(_ rgbLabels: UILabel...) {
-        rgbLabels.forEach { label in
+    // String conversion method
+    private func string(slider: UISlider) -> String {
+        String(format: "%.2f", slider.value)
+    }
+    
+    // Methods for transferring values to elements
+    private func setValue(for labels: UILabel...) {
+        labels.forEach { label in
             switch label {
             case redLabel:
-                redSlider.value = Float(CGFloat(round(redSlider.value  *  100) / 100))
-                redLabel.text = redSlider.value.formatted()
-                redTextField.text = redSlider.value.formatted()
-               // redSlider.value = Float(redTextField.text!)!
+                redLabel.text = string(slider: redSlider)
             case greenLabel:
-                greenSlider.value = Float(CGFloat(round(greenSlider.value * 100) / 100))
-                greenLabel.text = greenSlider.value.formatted()
-                greenTextField.text = greenSlider.value.formatted()
-               // greenTextField.text = greenLabel.text
+                greenLabel.text = string(slider: greenSlider)
             default:
-                blueSlider.value = Float(CGFloat(round(blueSlider.value * 100) / 100))
-                blueLabel.text = blueSlider.value.formatted()
-                blueTextField.text = blueSlider.value.formatted()
-               // blueTextField.text = blueLabel.text
+                blueLabel.text = string(slider: blueSlider)
             }
         }
     }
     
-    private func setValueForSliders(_ sliders: UISlider...) {
-        let rgbColor = CIColor(color: backgroundColorView)
+    private func setValue(for sliders: UISlider...) {
+        let rgbColor = CIColor(color: viewColor)
         sliders.forEach { slider in
             switch slider {
             case redSlider:
                 redSlider.value = Float(rgbColor.red)
-                setValueForLabels(redLabel)
             case greenSlider:
                 greenSlider.value = Float(rgbColor.green)
-                setValueForLabels(greenLabel)
             default:
                 blueSlider.value = Float(rgbColor.blue)
-                setValueForLabels(blueLabel)
             }
         }
     }
     
-    private func textFieldSetting() {
-        
+    private func setValue(for textFields: UITextField...) {
+        textFields.forEach { textField in
+            switch textField {
+            case redTextField:
+                textField.text = string(slider: redSlider)
+            case greenTextField:
+                textField.text = string(slider: greenSlider)
+            default:
+                textField.text = string(slider: blueSlider)
+            }
+        }
     }
     
-    
-    
-    private func showAlert(title: String, message: String) {
+    // ShowAlert
+    private func showAlert(title: String, message: String, textField: UITextField? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .default)
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            textField?.text = "0.50"
+            textField?.becomeFirstResponder()
+        }
         alert.addAction(okAction)
         present(alert, animated: true)
     }
-    
-//
-//    private func dataTransferFromTF(_ textFields: UITextField...) {
-//        textFields.forEach { textField in
-//            switch textField {
-//            case redTextField:
-//                redSlider.setValue(<#T##value: Float##Float#>, animated: <#T##Bool#>)
-//            case greenTextField:
-//                //greenTextField.text = greenLabel.text
-//                greenSlider.value = Float(greenTextField.text!) ?? 0
-//            default:
-//               // blueTextField.text = blueLabel.text
-//                blueSlider.value = Float(blueTextField.text!) ?? 0
-//            }
-//        }
-//    }
-    
-    @IBAction func pressedDoneButton() {
-        delegate.setViewColor(colorSettingsView.backgroundColor)
-        dismiss(animated: true)
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        view.endEditing(true)
-    }
-    
-    
-    
 }
 
-
+// MARK: - UITextFieldDelegate
 extension SettingsViewController: UITextFieldDelegate {
     
-
-
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-       // return true
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        guard let text = textField.text else {
+            showAlert(title: "Wrong format!", message: "Please enter correct value")
+            return
+        }
+        guard let currentValue = Float(text), (0...1).contains(currentValue) else {
+            showAlert(title: "Wrong format!", message: "Please enter correct value", textField: textField)
+            return
+        }
+        
+        switch textField {
+        case redTextField:
+            redSlider.setValue(currentValue, animated: true)
+            setValue(for: redLabel)
+        case greenTextField:
+            greenSlider.setValue(currentValue, animated: true)
+            setValue(for: greenLabel)
+        default:
+            blueSlider.setValue(currentValue, animated: true)
+            setValue(for: blueLabel)
+        }
+        setColor()
     }
     
-    
-    
-    
-    
-    
-//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-//        if let newString = textField.text?.replacingCharacters(in: range, with: string), let newDouble = Double(newString) {
-//            if newDouble >= 0 && newDouble <= 1 {
-//                return true
-//            } else {
-//                showAlert(title: "error", message: "dfghjk")
-//                return false
-//            }
-//        }
-//        return false
-//    }
-    
-    //    func textFieldDidBeginEditing(_ textField: UITextField) {
-    //        if (textField == redTextField) || (textField == greenTextField) || (textField == blueTextField) {
-    //            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: textField, action: #selector(resignFirstResponder))
-    //            navigationItem.rightBarButtonItem = doneButton
-    //        }
-    //    }
-    //
-    //    func textFieldDidEndEditing(_ textField: UITextField) {
-    //        switch textField {
-    //        case redTextField:
-    //            redSlider.value = Float(redTextField.text!)!
-    //            setValueForLabels(redLabel)
-    //        case greenTextField:
-    //            greenSlider.value = Float(greenTextField.text!)!
-    //            setValueForLabels(greenLabel)
-    //        default:
-    //            blueSlider.value = Float(blueTextField.text!)!
-    //            setValueForLabels(blueLabel)
-    //        }
-    //}
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        textField.inputAccessoryView = toolbar
+        
+        let doneButton = UIBarButtonItem(
+            barButtonSystemItem: .done,
+            target: textField,
+            action: #selector(resignFirstResponder)
+        )
+        
+        let separator = UIBarButtonItem(
+            barButtonSystemItem: .flexibleSpace,
+            target: nil,
+            action: nil
+        )
+        
+        toolbar.items = [separator, doneButton]
+    }
 }
+
+
